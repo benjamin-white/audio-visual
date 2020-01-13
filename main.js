@@ -1,3 +1,4 @@
+const bodyElement   = document.querySelector('body');
 const audioCTX      = new AudioContext();
 const audioAnalyser = audioCTX.createAnalyser();
 const audioElement  = document.querySelector('audio');
@@ -10,7 +11,7 @@ audioAnalyser.connect(audioCTX.destination);
 
 const bufferLength = audioAnalyser.frequencyBinCount;
 const dataArray    = new Uint8Array(bufferLength);
-audioAnalyser.getByteTimeDomainData(dataArray);
+// audioAnalyser.getByteTimeDomainData(dataArray);
 
 const createPlayButton = () => {
 
@@ -47,10 +48,15 @@ const addPlayEvents = (playElem, audioElement) => {
 
 }
 
-const canvas    = document.getElementById("oscilloscope");
+const canvas    = document.createElement('canvas');
 const canvasCTX = canvas.getContext("2d");
 canvas.width    = window.innerWidth;
 canvas.height   = window.innerHeight;
+
+const fitToViewBounds = elem => {
+  elem.width  = window.innerWidth;
+  elem.height = window.innerHeight;
+}
 
 const draw = () => {
 
@@ -86,8 +92,15 @@ const draw = () => {
 
   canvasCTX.lineTo(canvas.width, canvas.height / 2);
   canvasCTX.stroke();
+
 }
 
-document.querySelector('body').appendChild(addPlayEvents(createPlayButton(), audioElement));
+window.addEventListener(
+  'resize', // use lodash and throttle this
+  fitToViewBounds.bind(this, canvas)
+)
+
+bodyElement.appendChild(canvas);
+bodyElement.appendChild(addPlayEvents(createPlayButton(), audioElement));
 
 draw();
