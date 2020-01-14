@@ -1,66 +1,33 @@
+const FFTSIZE       = 1024;
+const bufferLength  = FFTSIZE / 2;
+const dataArray     = new Uint8Array(bufferLength);
 const bodyElement   = document.querySelector('body');
+const playButton    = createPlayButton();
+const audioElement  = createAudioElement('boxcutter-moon_pupils.mp3');
 const audioCTX      = new AudioContext();
-const audioAnalyser = audioCTX.createAnalyser();
-const audioElement  = document.querySelector('audio');
 const audioInput    = audioCTX.createMediaElementSource(audioElement);
+const audioAnalyser = audioCTX.createAnalyser();
+const canvas        = document.createElement('canvas');
+const canvasCTX     = canvas.getContext("2d");
 
-audioAnalyser.fftSize = 1024;
+canvas.height = window.innerHeight;
+canvas.width  = window.innerWidth;
+
+audioAnalyser.fftSize = FFTSIZE;
 audioAnalyser.smoothingTimeConstant = 0.9;
 audioInput.connect(audioAnalyser);
 audioAnalyser.connect(audioCTX.destination);
 
-const bufferLength = audioAnalyser.frequencyBinCount;
-const dataArray    = new Uint8Array(bufferLength);
-// audioAnalyser.getByteTimeDomainData(dataArray);
+handleEnded(audioElement)(playButton);
+resizeToViewport(canvas);
 
-const createPlayButton = () => {
+bodyElement.appendChild(canvas);
+bodyElement.appendChild(audioElement);
+bodyElement.appendChild(addPlayEvents(playButton, audioElement));
 
-  const button = document.createElement('button');
-  button.textContent = 'Play';
-  button.dataset.playing = 'false';
-  button.setAttribute('role', 'switch');
+const oscilloscope = () => {
 
-  return button;
-
-}
-
-const addPlayEvents = (playElem, audioElement) => {
-
-  if (playElem.nodeType !== Node.ELEMENT_NODE) return playElem;
-
-  playElem.addEventListener('click', ev => {
-
-    audioCTX.state === 'suspended' && audioCTX.resume();
-
-    const isPlaying = ev.currentTarget.dataset.playing === 'true';
-
-    audioElement[isPlaying ? 'pause' : 'play']();
-    ev.currentTarget.textContent = isPlaying ? 'Play' : 'Pause';
-    ev.currentTarget.dataset.playing = isPlaying ? 'false' : 'true';
-
-  }, false);
-
-  audioElement.addEventListener('ended', () => {
-    playElem.dataset.playing = 'false';
-  }, false);
-
-  return playElem;
-
-}
-
-const canvas    = document.createElement('canvas');
-const canvasCTX = canvas.getContext("2d");
-canvas.width    = window.innerWidth;
-canvas.height   = window.innerHeight;
-
-const fitToViewBounds = elem => {
-  elem.width  = window.innerWidth;
-  elem.height = window.innerHeight;
-}
-
-const draw = () => {
-
-  requestAnimationFrame(draw);
+  requestAnimationFrame(oscilloscope);
 
   audioAnalyser.getByteTimeDomainData(dataArray);
 
@@ -95,12 +62,4 @@ const draw = () => {
 
 }
 
-window.addEventListener(
-  'resize', // use lodash and throttle this
-  fitToViewBounds.bind(this, canvas)
-)
-
-bodyElement.appendChild(canvas);
-bodyElement.appendChild(addPlayEvents(createPlayButton(), audioElement));
-
-draw();
+oscilloscope();
