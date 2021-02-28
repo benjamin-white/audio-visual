@@ -83,7 +83,7 @@ const addPlayEvents = (playElem, audioElement) => {
 
     audioElement[isPlaying ? 'pause' : 'play']();
     ev.currentTarget.textContent     = isPlaying ? 'Play' : 'Pause';
-    ev.currentTarget.dataset.playing = isPlaying;
+    ev.currentTarget.dataset.playing = isPlaying ? 'false' : 'true';
 
   }, false);
 

@@ -1,4 +1,4 @@
-#**AUDIO VISUAL**
+# **AUDIO VISUAL**
 
 A quick MVP test to learn more about the browser audio API; tested in Chromium and a little rough around the edges.
 
