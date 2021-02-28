@@ -1,0 +1,137 @@
+@keyframes soft-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+:root {
+  --accent-primary: 243, 75, 10;
+}
+
+* {
+
+  box-sizing: border-box;
+
+}
+
+body {
+
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  margin: 0;
+  overflow: hidden;
+  letter-spacing: .05em;
+  padding: 0;
+
+}
+
+canvas {
+
+  display: block;
+  position: relative;
+  z-index: 1;
+
+}
+
+button {
+
+  animation-name: soft-in;
+  animation-duration: 1.75s;
+  background: rgb(var(--accent-primary));
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  letter-spacing: .2em;
+  min-width: 120px;
+  padding: .5em 1em;
+  text-transform: uppercase;
+  transition: background-color .4s ease-out, color .4s ease-out;
+
+}
+
+button:hover,
+button[data-playing="true"] {
+
+  background: #fff;
+  color: rgb(var(--accent-primary));
+  outline: none;
+
+}
+
+button:focus {
+  outline: 2px solid rgba(var(--accent-primary), .4);
+}
+
+.InfoBar {
+
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding: 1em;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 9999;
+
+}
+
+.TrackInfo {
+
+  animation-name: soft-in;
+  animation-duration: 1s;
+  color: #88888e;
+
+}
+
+.TrackInfo span {
+  transition: color .3s ease-in;
+}
+
+.TrackInfo span:first-child {
+  color: #fff;
+}
+
+button[data-playing="true"] + .TrackInfo  span:first-child {
+  color: rgb(var(--accent-primary));
+}
+
+.Track {
+
+  animation-name: soft-in;
+  animation-duration: 1.75s;
+  bottom: 0;
+  left: 0;
+  padding: 0 1rem 2rem;
+  position: absolute;
+  width: 100%;
+  z-index: 99;
+
+}
+
+.Track-inner {
+
+  background: #454548;
+  cursor: pointer;
+  height: .5rem;
+  transform-origin: bottom center;
+  transition: transform .3s ease-out;
+
+}
+
+.Track-inner:hover {
+  transform: scaleY(2);
+}
+
+.Track-inner::before {
+
+  background: rgb(var(--accent-primary));
+  content: '';
+  display: block;
+  height: .5rem;
+  width: var(--track-current);
+
+}
